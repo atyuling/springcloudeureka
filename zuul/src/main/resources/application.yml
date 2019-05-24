@@ -1,0 +1,25 @@
+eureka:
+ client:
+   serviceUrl:
+   #服务注册中心
+    defaultZone: http://localhost:8761/eureka/
+server:
+#自身接口
+  port: 8769
+spring:
+  application:
+  #在服务注册中心的应用名
+    name: service-zuul
+zuul:
+  routes:
+  ##第一个路由api-a连接到service-ribbon
+  #比如直接放问service-ribbon就是http://localhost:8765/hi?name=12Wrk12这样访问service-ribbon这个应用的hi方法，参数name
+  ##而用zuul转接就是http://localhost:8769/api-a/hi?name=12Wrk12
+  #得到同样的结果，路由
+    api-a:
+     path: /api-a/**
+     serviceId: service-ribbon
+     ##第一个路由api-b连接到servicer-feign
+    api-b:
+     path: /api-b/**
+     serviceId: servicer-feign

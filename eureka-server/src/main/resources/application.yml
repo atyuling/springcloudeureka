@@ -1,0 +1,32 @@
+server:
+  port: 8761
+
+eureka:
+  instance:
+    # 心跳检测检测与续约时间
+    # 测试 时将值设置设置小些，保证服务关闭后注册中心能及时踢出服务
+    #与下面被注释的enable-self-preservation: false一起用
+    #lease-renewal-interval-in-seconds: 1
+    #lease-expiration-duration-in-seconds: 2
+    #主机名也可以写localhost。。。
+    hostname: 192.168.28.84
+  client:
+   #通过eureka.client.registerWithEureka：false和fetchRegistry：false来表明自己是一个eureka server.
+    ##实例是否在eureka服务器上注册自己的信息以供其他服务发现，默认为true（服务提供）
+    registerWithEureka: false
+    #此客户端是否获取eureka服务器注册表上的注册信息，默认为true（服务接收）
+    fetchRegistry: false
+    #service默认的空间翻译下来就是http://192.168.28.84:8761/eureka/,是注册中心提供给服务提供者用来进行注册的地址
+    serviceUrl:
+      defaultZone: http://${eureka.instance.hostname}:${server.port}/eureka/
+  #测试 时关闭自我保护机制，保证不可用服务及时踢出,也就是那些没有心跳的服务，马上踢出去，不会在服务注册中心显示了
+  #当然，测试时这样可以，正式的就要考虑一下了，因为可能网络波动原因导致心跳没及时响应，所以就不能马上踢出去，要等一等
+  #等保护机制判断
+  #这个可以看下https://www.cnblogs.com/snowjeblog/p/8821325.html
+  #server:
+    #enable-self-preservation: false
+#需要指明spring.application.name,这个很重要，这在以后的服务与服务之间相互调用一般都是根据这个name
+spring:
+  application:
+    name: eurka-server
+
